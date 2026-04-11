@@ -28,27 +28,28 @@ removeWatermark();
 setInterval(removeWatermark, 100);
 
 console.log('✅ 自动去水印已永久启动');
+// 禁止按键触发模糊
+document.addEventListener('keydown', function(e) {
+  e.stopImmediatePropagation();
+}, true);
 
-// 安全版：仅禁用右键 + 禁用F12，无任何防调试，绝不空白页面
-(function() {
-    // 禁用右键菜单
-    document.oncontextmenu = function(e) {
-        return false;
-    };
+document.addEventListener('keyup', function(e) {
+  e.stopImmediatePropagation();
+}, true);
 
-    // 禁用 F12
-    document.onkeydown = function(e) {
-        // 禁用 F12
-        if (e.key === 'F12' || e.keyCode === 123) {
-            return false;
-        }
-        // 禁用 Ctrl+U 查看源码
-        if (e.ctrlKey && e.key === 'u') {
-            return false;
-        }
-        // 禁用 Ctrl+Shift+I 打开控制台
-        if (e.ctrlKey && e.shiftKey && e.key === 'i') {
-            return false;
-        }
-    };
-})();
+// 强制清除所有模糊滤镜
+document.querySelectorAll('*').forEach(el => {
+  el.style.filter = 'none !important';
+  el.style.textShadow = 'none !important';
+  el.style.opacity = '1 !important';
+});
+
+// 持续强制清除模糊（防止网站反复设置）
+setInterval(() => {
+  document.querySelectorAll('*').forEach(el => {
+    el.style.filter = 'none';
+  });
+}, 50);
+
+console.log('✅ 已禁用按键模糊，页面保持清晰');
+                               
